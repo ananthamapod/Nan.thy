@@ -1,0 +1,52 @@
+{
+  "name": "Nan.thy",
+  "version": "1.0.0",
+  "description": "custom url shortener",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "webpack -d --watch",
+    "prod": "webpack -p",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ananthamapod/Nan.thy.git"
+  },
+  "keywords": [
+    "url-shortener"
+  ],
+  "author": "Ananth Rao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ananthamapod/Nan.thy/issues"
+  },
+  "homepage": "https://github.com/ananthamapod/Nan.thy#readme",
+  "devDependencies": {
+    "assets-webpack-plugin": "^3.5.1",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "css-loader": "^0.28.4",
+    "eslint": "^4.4.1",
+    "eslint-loader": "^1.9.0",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "node-sass": "^4.5.3",
+    "postcss-loader": "^2.0.6",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.5.5"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-runtime": "^6.26.0",
+    "bootstrap": "^4.0.0-alpha.6",
+    "jquery": "^3.2.1",
+    "popper.js": "^1.11.0"
+  }
+}
