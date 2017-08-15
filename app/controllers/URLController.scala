@@ -1,16 +1,15 @@
 package controllers
 
+import java.security.MessageDigest
 import javax.inject.Inject
 
 import models.URLRequest
 import play.api.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
-import play.api.mvc._
-
-import scala.collection.mutable.ArrayBuffer
+import play.api.mvc.{Action, _}
 
 class URLController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
-  val urlMap: ArrayBuffer[String] = ArrayBuffer.empty[String]
+  var urlMap: Map[String, String] = Map.empty
 
   def createUrl:Action[JsValue] = Action(parse.json) { implicit request =>
     val config = Json.fromJson[URLRequest](request.body)
@@ -21,8 +20,9 @@ class URLController @Inject()(cc: ControllerComponents) extends AbstractControll
     } else {
       try {
         val originalUrl: String = config.get.longUrl
-        val message: String = s"Created new shortened url for $originalUrl with id ${urlMap.length}"
-        urlMap.append(originalUrl)
+        val id = sha256(config.get.longUrl)
+        val message: String = s"Created new shortened url for $originalUrl with id $id"
+        urlMap += (id -> originalUrl)
         Logger.info(message)
         Created(message)
       } catch {
@@ -37,14 +37,23 @@ class URLController @Inject()(cc: ControllerComponents) extends AbstractControll
     Ok(Json.toJson(urlMap))
   }
 
-  def getUrl(shortenedUrlId: Int): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    Ok(Json.toJson(urlMap))
+  def getUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    Ok(Json.toJson(urlMap.getOrElse(shortenedUrlId, None)))
   }
 
-  def deleteUrl(shortenedUrlId: Int): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+  def deleteUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message: String = s"Deleted shortened url $shortenedUrlId"
-    urlMap.remove(shortenedUrlId)
+    urlMap -= (shortenedUrlId)
     Logger.info(message)
     Ok(message)
+  }
+
+  def sha24: Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    Ok(sha256("test"))
+  }
+
+  private def sha256(string: String): String = {
+    val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+    md.digest(string.getBytes).map(0xFF & _).foldLeft("") {_ + _}
   }
 }
