@@ -7,8 +7,9 @@ import models.URLRequest
 import play.api.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc.{Action, _}
+import util.NanthyConfig
 
-class URLController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig) extends AbstractController(cc) {
   var urlMap: Map[String, String] = Map.empty
 
   def createUrl:Action[JsValue] = Action(parse.json) { implicit request =>
@@ -21,7 +22,7 @@ class URLController @Inject()(cc: ControllerComponents) extends AbstractControll
       try {
         val originalUrl: String = config.get.longUrl
         val id = sha256(config.get.longUrl)
-        val message: String = s"Created new shortened url for $originalUrl with id $id"
+        val message: String = s"Created new shortened url for $originalUrl at ${appConfig.localAddress}:${appConfig.port}/$id"
         urlMap += (id -> originalUrl)
         Logger.info(message)
         Created(message)
@@ -50,6 +51,11 @@ class URLController @Inject()(cc: ControllerComponents) extends AbstractControll
 
   def sha24: Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     Ok(sha256("test"))
+  }
+
+  def remapUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    val redirectUrl: String = urlMap.getOrElse(shortenedUrlId, None)
+    Redirect(redirectUrl)
   }
 
   private def sha256(string: String): String = {

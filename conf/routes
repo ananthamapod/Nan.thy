@@ -24,3 +24,5 @@ GET		/sha24       				controllers.URLController.sha24
 
 # delete shortened url denoted by id
 DELETE	/deleteUrl/:id				controllers.URLController.deleteUrl(id: String)
+
+GET     /:id                        controllers.URIController.remapUrl(id: String)
