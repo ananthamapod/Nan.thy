@@ -8,5 +8,4 @@ target
 /RUNNING_PID
 node_modules
 npm-debug.log
-public/javascripts/bundle*
-public/stylesheets/main.css
+public/

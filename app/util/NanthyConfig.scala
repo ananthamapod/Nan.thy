@@ -6,10 +6,10 @@ import javax.inject._
 
 @Singleton
 class NanthyConfig {
-  val config: Config = ConfigFactory.load("nanthy")
+  val config: Config = ConfigFactory.load("application.conf")
 
-  val port: String = config.getString("nanthy.port")
-  val localAddress: String = config.getString("nanthy.localAddress")
+  val port: String = "http://localhost" //config.getString("nanthy.port")
+  val localAddress: String = "port" //config.getString("nanthy.localAddress")
 
   override def toString: String = {
     s"************************************\n" +

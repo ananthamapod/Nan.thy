@@ -39,12 +39,12 @@ class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig)
   }
 
   def getUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    Ok(Json.toJson(urlMap.getOrElse(shortenedUrlId, None)))
+    Ok(urlMap(shortenedUrlId))
   }
 
   def deleteUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message: String = s"Deleted shortened url $shortenedUrlId"
-    urlMap -= (shortenedUrlId)
+    urlMap -= shortenedUrlId
     Logger.info(message)
     Ok(message)
   }
@@ -54,7 +54,7 @@ class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig)
   }
 
   def remapUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    val redirectUrl: String = urlMap.getOrElse(shortenedUrlId, None)
+    val redirectUrl: String = urlMap(shortenedUrlId)
     Redirect(redirectUrl)
   }
 
