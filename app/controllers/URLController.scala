@@ -3,7 +3,7 @@ package controllers
 import java.security.MessageDigest
 import javax.inject.Inject
 
-import models.URLRequest
+import models.{URLAlias, URLRequest}
 import play.api.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc.{Action, _}
@@ -21,11 +21,13 @@ class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig)
     } else {
       try {
         val originalUrl: String = config.get.longUrl
-        val id = sha256(config.get.longUrl)
+        val id: String = sha256(config.get.longUrl)
+        val aliasUrl: String = s"${appConfig.localAddress}:${appConfig.port}/$id"
+        val responseObject: URLAlias = URLAlias(aliasUrl, originalUrl)
         val message: String = s"Created new shortened url for $originalUrl at ${appConfig.localAddress}:${appConfig.port}/$id"
         urlMap += (id -> originalUrl)
         Logger.info(message)
-        Created(message)
+        Created(Json.toJson(responseObject))
       } catch {
         case e: Exception =>
           Logger.error(e.getMessage)
