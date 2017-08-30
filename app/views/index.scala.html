@@ -1,5 +1,32 @@
 @()
 
-@main("Nan.thy") {
-    <h1>Welcome to Play!</h1>
+@main("Nan.thy - The Best URL Shortener since Crisco") {
+<nav class="navbar navbar-toggleable-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">
+        Nan.thy
+        <small>The Best URL Shortener since Crisco</small>
+    </a>
+</nav>
+<main class="container-fluid align-middle">
+    <section class="bg-dark text-white card">
+        <div class="row">
+            <div class="col">
+                <h2>Shorten your link and share it to your audience with ease!</h2>
+                <form method="POST" action="/createUrl">
+                    <div class="input-group">
+                        <div class="input-group-addon">Unshortened Link:</div>
+                        <input type="text" name="longUrl">
+                    </div>
+                    <input class="btn btn-primary outline" type="submit" value="Shorten it!" />
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+<footer class="footer">
+    <div class="container">
+        <span class="text-muted">Links converted: <span class="total_num_links"></span></span>
+    </div>
+</footer>
+
 }
