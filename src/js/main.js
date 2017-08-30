@@ -10,9 +10,9 @@ $(document).ready(() => {
       contentType: 'application/json',
       data: JSON.stringify({longUrl: url}),
       success: (response) => {
-        $('#longUrlText').html(url)
-        $('#shortenedUrlText').html(response.aliasUrl)
-        $('#shortenedUrlMessage').toggleClass('d-none')
+        $('#longUrlLink').html(url).attr('href', url)
+        $('#shortenedUrlLink').html(response.aliasUrl).attr('href', url)
+        $('#shortenedUrlMessage').removeClass('d-none')
         $('input[name=longUrl]').val('')
       }
     })
