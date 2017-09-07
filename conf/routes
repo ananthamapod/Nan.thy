@@ -19,9 +19,6 @@ GET		/listUrls					controllers.URLController.listUrls
 # list all shortened and original urls
 GET		/getUrl/:id 				controllers.URLController.getUrl(id: String)
 
-# list all shortened and original urls
-GET		/sha24       				controllers.URLController.sha24
-
 # delete shortened url denoted by id
 DELETE	/deleteUrl/:id				controllers.URLController.deleteUrl(id: String)
 

@@ -10,7 +10,7 @@ import play.api.mvc.{Action, _}
 import util.NanthyConfig
 
 class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig) extends AbstractController(cc) {
-  var urlMap: Map[String, String] = Map.empty
+  var urlMap: Map[String, (String, Int)] = Map.empty
 
   def createUrl:Action[JsValue] = Action(parse.json) { implicit request =>
     val config = Json.fromJson[URLRequest](request.body)
@@ -24,9 +24,16 @@ class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig)
         val id: String = sha256(config.get.longUrl)
         val aliasUrl: String = s"${appConfig.localAddress}:${appConfig.port}/$id"
         val responseObject: URLAlias = URLAlias(aliasUrl, originalUrl)
-        val message: String = s"Created new shortened url for $originalUrl at ${appConfig.localAddress}:${appConfig.port}/$id"
-        urlMap += (id -> originalUrl)
-        Logger.info(message)
+        if (urlMap.contains(id)) {
+          val message: String = s"Created new shortened url for $originalUrl at ${appConfig.localAddress}:${appConfig.port}/$id"
+          val count = urlMap(id)._2 + 1
+          urlMap += (id -> (originalUrl, count))
+          Logger.info(message)
+        } else {
+          val message: String = s"Created new shortened url for $originalUrl at ${appConfig.localAddress}:${appConfig.port}/$id"
+          urlMap += (id -> (originalUrl, 1))
+          Logger.info(message)
+        }
         Created(Json.toJson(responseObject))
       } catch {
         case e: Exception =>
@@ -41,7 +48,7 @@ class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig)
   }
 
   def getUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    Ok(urlMap(shortenedUrlId))
+    Ok(Json.toJson(urlMap(shortenedUrlId)))
   }
 
   def deleteUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
@@ -51,12 +58,10 @@ class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig)
     Ok(message)
   }
 
-  def sha24: Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    Ok(sha256("test"))
-  }
-
   def remapUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    val redirectUrl: String = urlMap(shortenedUrlId)
+    val urlAlias = urlMap(shortenedUrlId)
+    val redirectUrl: String = urlAlias._1
+    urlMap += (shortenedUrlId -> (urlAlias._1, urlAlias._2 + 1))
     Redirect(redirectUrl)
   }
 
