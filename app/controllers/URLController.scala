@@ -10,7 +10,7 @@ import play.api.mvc.{Action, _}
 import util.NanthyConfig
 
 class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig) extends AbstractController(cc) {
-  var urlMap: Map[String, (String, Int)] = Map.empty
+  var urlMap: Map[String, URLAlias] = Map.empty
 
   def createUrl:Action[JsValue] = Action(parse.json) { implicit request =>
     val config = Json.fromJson[URLRequest](request.body)
@@ -23,15 +23,16 @@ class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig)
         val originalUrl: String = config.get.longUrl
         val id: String = sha256(config.get.longUrl)
         val aliasUrl: String = s"${appConfig.localAddress}:${appConfig.port}/$id"
-        val responseObject: URLAlias = URLAlias(aliasUrl, originalUrl)
+        var responseObject: URLAlias = null
         if (urlMap.contains(id)) {
-          val message: String = s"Created new shortened url for $originalUrl at ${appConfig.localAddress}:${appConfig.port}/$id"
-          val count = urlMap(id)._2 + 1
-          urlMap += (id -> (originalUrl, count))
+          val message: String = s"Shortened url for $originalUrl at $aliasUrl requested"
+          responseObject = urlMap(id)
+          responseObject.requests += 1
           Logger.info(message)
         } else {
-          val message: String = s"Created new shortened url for $originalUrl at ${appConfig.localAddress}:${appConfig.port}/$id"
-          urlMap += (id -> (originalUrl, 1))
+          val message: String = s"Created new shortened url for $originalUrl at $aliasUrl"
+          responseObject = new URLAlias(aliasUrl, originalUrl, 1, 0)
+          urlMap += (id -> responseObject)
           Logger.info(message)
         }
         Created(Json.toJson(responseObject))
@@ -59,9 +60,10 @@ class URLController @Inject()(cc: ControllerComponents, appConfig: NanthyConfig)
   }
 
   def remapUrl(shortenedUrlId: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    val urlAlias = urlMap(shortenedUrlId)
-    val redirectUrl: String = urlAlias._1
-    urlMap += (shortenedUrlId -> (urlAlias._1, urlAlias._2 + 1))
+    val urlAlias: URLAlias = urlMap(shortenedUrlId)
+    val redirectUrl: String = urlAlias.aliasUrl
+    urlAlias.hits += 1
+    Logger.info(s"Hit $redirectUrl")
     Redirect(redirectUrl)
   }
 
