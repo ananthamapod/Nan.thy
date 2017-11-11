@@ -7,8 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "dev": "webpack -d --watch",
-    "prod": "webpack -p",
+    "dev": "node_modules/.bin/webpack -d --watch --env development",
+    "prod": "node_modules/.bin/webpack -p --env production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,12 +26,14 @@
   "homepage": "https://github.com/ananthamapod/Nan.thy#readme",
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.1",
+    "autoprefixer": "^7.1.6",
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "css-loader": "^0.28.4",
+    "cssnano": "^3.10.0",
     "eslint": "^4.4.1",
     "eslint-loader": "^1.9.0",
     "extract-text-webpack-plugin": "^3.0.0",
@@ -39,7 +41,10 @@
     "postcss-loader": "^2.0.6",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
-    "webpack": "^3.5.5"
+    "stylelint": "^8.2.0",
+    "stylelint-webpack-plugin": "^0.9.0",
+    "webpack": "^3.5.5",
+    "webpack-merge": "^4.1.1"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
