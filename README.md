@@ -77,7 +77,7 @@ And assuming our planet doesn't suddenly explode or something, you should be goo
 
 ## License
 
-MIT
+MIT, for more information, see [LICENSE](LICENSE)
 
 ## Inspiration
 Well, not that a URL shortener is really some innovative concept that needs special inspiration, but this [Quora question](https://www.quora.com/What-is-the-architecture-of-a-scalable-URL-shortener) gave me the initial push to make this project. It occurred to me that despite having been doing web development for a while, I'd never even built the Holy Grail of starter web projects before! And that's all I needed anyway, I just needed a reason to play around with the Play framework, I mean, it's in the name! (Alright, I'll stop :neckbeard:).
