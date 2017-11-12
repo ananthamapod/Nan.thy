@@ -1,5 +1,5 @@
 {
-  "name": "Nan.thy",
+  "name": "NaN.thy",
   "version": "1.0.0",
   "description": "custom url shortener",
   "main": "src/index.js",
